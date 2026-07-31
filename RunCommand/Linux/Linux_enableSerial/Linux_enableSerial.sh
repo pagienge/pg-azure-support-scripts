@@ -65,13 +65,15 @@ enable_serial_service() {
         echo "WARNING: 'systemctl unmask $unit' returned $rc (continuing)." >&2
     fi
 
-    echo "Enabling $unit ..."
-    systemctl enable "$unit"
-    rc=$?
-    if [ $rc -ne 0 ]; then
-        echo "ERROR: 'systemctl enable $unit' failed with exit $rc." >&2
-        return $rc
-    fi
+# disabling the "enable" action, we don't want to making a lasting change, if we can avoid it, although 
+# the 'unmask' action above is still required just for the 'start' to work
+#    echo "Enabling $unit ..."
+#    systemctl enable "$unit"
+#    rc=$?
+#    if [ $rc -ne 0 ]; then
+#        echo "ERROR: 'systemctl enable $unit' failed with exit $rc." >&2
+#        return $rc
+#    fi
 
     echo "Starting $unit ..."
     systemctl start "$unit"
