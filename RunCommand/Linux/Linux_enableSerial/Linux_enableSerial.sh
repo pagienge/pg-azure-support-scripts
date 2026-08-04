@@ -1,8 +1,20 @@
 #!/bin/bash
+# -----------------------------------------------------------------------------
+# File: Linux_enableSerial.sh
+# This script enables the serial console (ttyS0) for login purposes on an
+# otherwise functional Linux VM in Azure.  It does not make any changes to the
+# configuration of the machine, only starts services in the current OS instance
 #
-# Linux_enableSerial.sh
-# Test and enable Azure Serial Console functionality on a Linux VM.
 # Designed to be run non-interactively as root (e.g. via Azure Run Command).
+# -----------------------------------------------------------------------------
+# Version: 1.0.0
+# Released: 2026-08-05
+# Latest update: 2026-08-05
+# Author: Azure Support
+#
+# Copyright (c) Microsoft Corporation. All rights reserved.
+# Licensed under the terms found in the LICENSE file in the root of this source tree.
+# -----------------------------------------------------------------------------
 
 SERIAL_SERVICE="serial-getty@ttyS0.service"
 
