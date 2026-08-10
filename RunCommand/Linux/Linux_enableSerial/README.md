@@ -1,8 +1,10 @@
 # Azure VM Serial Console Enabler (Linux)
 
-This bash script tests and enables the Azure Serial Console `getty` on Linux VMs. It identifies the guest distribution, reports the current state of the `serial-getty@ttyS0.service` unit, and — if the unit is not already active — unmasks and starts it in the running OS so a login prompt is available on `ttyS0` via the Azure Serial Console.
+This bash script enables the serial console for login capabilities, which can be used by the Azure Serial Console interface. It identifies the guest distribution, reports the current state of the `serial-getty@ttyS0.service` unit, and — if the unit is not already active — unmasks and starts it in the running OS so a login prompt is available on `ttyS0` via the Azure Serial Console.
 
-The script is intentionally **non-persistent**: it does not run `systemctl enable`, so the change does not survive a reboot. This keeps the tool safe for one-shot triage via Azure Run Command without altering the persistent state of the virtual machine.
+The script is intentionally **non-persistent**: it does not configure the virtual machine to start the services after a reboot. This keeps the tool safe for one-shot triage via Azure Run Command without altering the persistent state of the virtual machine.  If the systemd unit `serial-getty@ttyS0.service` was masked previously, it will be unmasked and remain unmasked however.
+
+There is no user alteration performed - a valid username/password combination is required.  Please see the related document for (password reset instructions)[https://learn.microsoft.com/troubleshoot/azure/virtual-machines/linux/reset-password].
 
 ## How It Works
 
@@ -14,7 +16,7 @@ The script runs 3 phases:
 
 ## Systemd Unit
 
-The Azure Serial Console attaches to a known serial port (`ttyS0`). systemd exposes this as a templated getty unit:
+The Azure Serial Console attaches to the standard Hyper-V serial port (`ttyS0`). systemd exposes this as a templated getty unit:
 
 ```
 serial-getty@ttyS0.service
@@ -90,13 +92,7 @@ az vm run-command invoke `
 The script uses `systemctl start` but **not** `systemctl enable`. This means:
 
 - The serial console getty is available immediately after the script completes
-- After the next reboot the unit returns to whatever state the image originally shipped
-
-If you have validated the console works and want the change to survive reboots, run:
-
-```bash
-sudo systemctl enable serial-getty@ttyS0.service
-```
+- After the next reboot the unit returns to whatever state the service is configured to be in at system boot
 
 ## Exit Codes
 
